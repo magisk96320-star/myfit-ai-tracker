@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101827">
+<title>MyFit AI — Personal Tracker</title>
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{--bg:#0b1220;--panel:#121d2e;--panel2:#1a2940;--text:#edf3fb;--muted:#9badc3;--line:#293950;--green:#55d69e;--blue:#77b7ff;--amber:#ffc66d;--red:#ff8585}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+header{position:sticky;top:0;z-index:5;background:#101827ed;backdrop-filter:blur(14px);padding:16px 16px 10px;border-bottom:1px solid var(--line)}
+.head{max-width:760px;margin:auto;display:flex;justify-content:space-between;align-items:center}.brand{font-size:21px;font-weight:800;letter-spacing:-.5px}.sub{font-size:12px;color:var(--muted)}.pill{border:1px solid #2e604e;color:var(--green);border-radius:99px;padding:5px 9px;font-size:11px}
+main{max-width:760px;margin:0 auto;padding:14px 14px 30px}.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px}.tab{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:12px;padding:10px 3px;font-size:12px}.tab.active{background:#1b3b39;border-color:#347b64;color:#caffdf}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:15px;margin-bottom:12px}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.muted{color:var(--muted)}.small{font-size:12px}.big{font-size:30px;font-weight:800;letter-spacing:-1px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.metric{background:var(--panel2);border-radius:13px;padding:12px}.metric b{display:block;font-size:20px;margin-top:3px}.bar{height:7px;border-radius:99px;background:#293950;overflow:hidden;margin-top:7px}.bar span{display:block;height:100%;background:var(--green);border-radius:99px}.section{font-weight:750;margin:15px 2px 9px}.input,textarea,select{width:100%;border:1px solid var(--line);background:#0d1726;color:var(--text);border-radius:12px;padding:12px;font:inherit;outline:none}.input:focus,textarea:focus{border-color:var(--blue)}textarea{min-height:82px;resize:vertical}.btn{border:0;border-radius:12px;padding:12px 14px;font-weight:700;background:var(--green);color:#092016;width:100%;margin-top:8px}.btn.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}.btn.danger{background:#47252c;color:#ffd7dc}.foodrow{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.foodrow:last-child{border:0}.foodrow small{display:block;color:var(--muted);margin-top:3px}.tag{font-size:11px;color:var(--muted);border:1px solid var(--line);padding:3px 7px;border-radius:99px}.micros{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.micro{padding:10px;background:var(--panel2);border-radius:11px}.micro b{display:block;font-size:13px}.micro span{font-size:11px;color:var(--muted)}.hidden{display:none!important}.notice{padding:11px;border-radius:12px;background:#28291e;color:#ffe1a4;font-size:12px;line-height:1.5}.foot{color:var(--muted);font-size:11px;text-align:center;margin:20px 5px}.actions{display:flex;gap:8px}.actions button{flex:1}.chart{height:90px;display:flex;align-items:end;gap:7px;padding:8px 2px}.chart i{display:block;flex:1;background:#347b64;border-radius:5px 5px 1px 1px;min-height:3px}.inline{display:flex;gap:8px}.inline>*{flex:1}.label{font-size:12px;color:var(--muted);display:block;margin:8px 0 5px}
+</style>
+</head>
+<body>
+<header><div class="head"><div><div class="brand">MyFit <span style="color:var(--green)">AI</span></div><div class="sub">Your private nutrition & fitness diary</div></div><span class="pill">DEVICE-ONLY</span></div></header>
+<main>
+<nav class="tabs" id="tabs">
+<button class="tab active" data-tab="today">Today</button><button class="tab" data-tab="chat">AI Log</button><button class="tab" data-tab="fitness">Fitness</button><button class="tab" data-tab="weight">Weight</button><button class="tab" data-tab="settings">Data</button>
+</nav>
+<section id="today">
+<div class="card">
+<div class="row"><div><div class="muted small">TODAY · <span id="todayDate"></span></div><div class="big" id="kcal">0 kcal</div><div class="muted small">Estimated food energy</div></div><span class="tag">Live totals</span></div>
+<div class="grid" style="margin-top:13px">
+<div class="metric"><span class="muted small">Protein</span><b id="protein">0 g</b><div class="bar"><span id="proteinBar" style="width:0%"></span></div><span class="muted small" id="proteinGoal">Goal 90 g</span></div>
+<div class="metric"><span class="muted small">Carbs</span><b id="carbs">0 g</b><div class="bar"><span id="carbsBar" style="width:0%"></span></div><span class="muted small">Daily estimate</span></div>
+<div class="metric"><span class="muted small">Fat</span><b id="fat">0 g</b><div class="bar"><span id="fatBar" style="width:0%"></span></div><span class="muted small">Daily estimate</span></div>
+<div class="metric"><span class="muted small">Fibre</span><b id="fibre">0 g</b><div class="bar"><span id="fibreBar" style="width:0%"></span></div><span class="muted small">Daily estimate</span></div>
+</div></div>
+<div class="section">Today's food</div><div class="card" id="foodList"><div class="muted small">No food logged yet. Add something in AI Log.</div></div>
+<div class="section">Micronutrient snapshot</div><div class="card"><div class="micros" id="microList"></div><p class="muted small">Micronutrient values are estimates when food composition data is incomplete. Supplements and sunlight are not assumed to be absorbed amounts.</p></div>
+<div class="section">Activity today</div><div class="grid">
+<div class="metric"><span class="muted small">Steps</span><b id="stepsToday">0</b></div><div class="metric"><span class="muted small">Water</span><b id="waterToday">0 ml</b></div>
+<div class="metric"><span class="muted small">Sleep</span><b id="sleepToday">— h</b></div><div class="metric"><span class="muted small">Workout</span><b id="workoutToday">0</b></div>
+</div>
+</section>
+<section id="chat" class="hidden">
+<div class="card"><div class="row"><b>Tell me what happened</b><span class="tag">Natural language</span></div><p class="muted small">Examples: “I ate 2 eggs and 2 dosa”; “make the chana 40 g”; “remove banana”; “I drank 500 ml water”; “walked 25 minutes”; “slept 7.5 hours”.</p>
+<textarea id="command" placeholder="Type a food, correction, workout, water, sleep or step entry..."></textarea><button class="btn" id="process">Process entry</button><div id="response" class="muted small" style="margin-top:10px"></div></div>
+<div class="notice">This offline-first version uses a built-in food estimate library and command parser. It is not connected to a cloud AI model yet. It saves your records on this device.</div>
+<div class="section">Quick add</div><div class="grid">
+<button class="btn secondary quick" data-value="I drank 250 ml milk">250 ml milk</button><button class="btn secondary quick" data-value="I drank 500 ml water">500 ml water</button><button class="btn secondary quick" data-value="I ate 1 banana">1 banana</button><button class="btn secondary quick" data-value="I ate 30 g roasted chana">30 g chana</button>
+</div></section>
+<section id="fitness" class="hidden">
+<div class="card"><b>Log a workout</b><label class="label">Describe your session</label><textarea id="workoutInput" placeholder="Example: 5 rounds: 5 pull-ups, 10 push-ups, 15 squats. 3 min rest."></textarea><button class="btn" id="saveWorkout">Save workout</button></div>
+<div class="card"><b>Daily activity</b><div class="inline"><div><label class="label">Steps</label><input class="input" id="stepsInput" type="number" placeholder="e.g. 8000"></div><div><label class="label">Water (ml)</label><input class="input" id="waterInput" type="number" placeholder="e.g. 2500"></div></div><div class="inline"><div><label class="label">Sleep (hours)</label><input class="input" id="sleepInput" type="number" step=".1" placeholder="e.g. 8"></div><div><label class="label">Walk (minutes)</label><input class="input" id="walkInput" type="number" placeholder="e.g. 30"></div></div><button class="btn" id="saveActivity">Save activity</button></div>
+<div class="section">Recent workouts</div><div class="card" id="workoutHistory"><span class="muted small">No workouts logged yet.</span></div>
+</section>
+<section id="weight" class="hidden">
+<div class="card"><b>Bodyweight</b><div class="inline"><div><label class="label">Weight (kg)</label><input class="input" id="weightInput" type="number" step=".1" placeholder="e.g. 85.0"></div><div><label class="label">Waist (cm, optional)</label><input class="input" id="waistInput" type="number" step=".1" placeholder="e.g. 88"></div></div><button class="btn" id="saveWeight">Save measurement</button></div>
+<div class="card"><b>Weight history</b><div id="weightHistory" class="muted small">No measurements yet.</div></div>
+<div class="notice">Use morning weigh-ins under similar conditions. Weekly averages are more useful than reacting to one day's change.</div>
+</section>
+<section id="settings" class="hidden">
+<div class="card"><b>Daily targets</b><div class="inline"><div><label class="label">Calories</label><input class="input" id="goalKcal" type="number" value="2300"></div><div><label class="label">Protein (g)</label><input class="input" id="goalProtein" type="number" value="90"></div></div><button class="btn" id="saveGoals">Save targets</button></div>
+<div class="card"><b>Backup & restore</b><p class="muted small">Export a JSON backup regularly. Import it to restore your diary on this device or another browser.</p><div class="actions"><button class="btn secondary" id="export">Export backup</button><button class="btn secondary" id="importBtn">Import backup</button></div><input type="file" id="importFile" accept="application/json" class="hidden"></div>
+<div class="card"><b>Privacy and storage</b><p class="muted small">Your entries are stored in this browser's local storage. They are not sent to a server by this app. Clearing browser data, using incognito mode, or uninstalling/resetting the browser can erase them. Keep backups.</p><button class="btn danger" id="clear">Delete all local data</button></div>
+<div class="notice">For a true AI chat, connect a model through a private backend. Never put an AI API key directly in this HTML file. This build deliberately works offline without an API key.</div>
+</section>
+<div class="foot">MyFit AI · Personal use · Food values are estimates, not medical advice.</div>
+</main>
+<script>
+const KEY='myfitai_device_v1';
+const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
+const fresh=()=>({foods:{},workouts:[],weights:[],activities:{},goals:{kcal:2300,protein:90,carbs:250,fat:70,fibre:30}});
+let db=load();
+if(!localStorage.getItem(KEY)){
+  const d=today();
+  const seed=[
+    {id:'oats',name:'YU high-protein oats',qty:60,unit:'g',n:{kcal:228,p:15.1,c:37.8,f:4.5,fi:5.4}},
+    {id:'dry fruits',name:'Mixed dry fruits',qty:30,unit:'g',n:{kcal:145,p:3.6,c:16.5,f:7.5,fi:2.4}},
+    {id:'banana',name:'Banana',qty:1,unit:'piece',n:{kcal:105,p:1.3,c:27,f:.4,fi:3.1}},
+    {id:'pb',name:'Peanut butter',qty:20,unit:'g',n:{kcal:118,p:5,c:4,f:10,fi:1.2}},
+    {id:'seeds',name:'Mixed seeds (including flax)',qty:3,unit:'g',n:{kcal:17,p:.6,c:.6,f:1.4,fi:.3,omega3:.7}},
+    {id:'milk',name:'Milk',qty:150,unit:'ml',n:{kcal:92,p:4.8,c:7.2,f:5,fi:0,calcium:180,b12:.7}},
+    {id:'coffee',name:'Coffee sachet',qty:1.6,unit:'g',n:{kcal:5,p:0,c:1,f:0,fi:0}},
+    {id:'chana',name:'Roasted chana',qty:60,unit:'g',n:{kcal:228,p:12,c:36,f:3.6,fi:9}},
+    {id:'besan',name:'Besan chilla (besan)',qty:50,unit:'g',n:{kcal:194,p:11,c:29,f:3.4,fi:5.5}},
+    {id:'oil',name:'Cooking oil',qty:5,unit:'ml',n:{kcal:45,p:0,c:0,f:5,fi:0}},
+    {id:'chickpeas',name:'Kadlebele masala (cooked)',qty:100,unit:'g',n:{kcal:164,p:8.9,c:27.4,f:2.6,fi:7.6}},
+    {id:'ghee',name:'Ghee',qty:5.5,unit:'ml',n:{kcal:50,p:0,c:0,f:5.5,fi:0}},
+    {id:'amla',name:'Amla',qty:1,unit:'piece',n:{kcal:20,p:.5,c:5,f:.1,fi:2,vitc:60}}
+  ];
+  db.foods[d]=seed;
+  localStorage.setItem(KEY,JSON.stringify(db));
+}
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||fresh()}catch(e){return fresh()}}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
+function dayFoods(){return db.foods[today()]||[]}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+const catalog=[
+['high protein oats','oats',100,{kcal:380,p:25.2,c:63,f:7.5,fi:9}],['yu oats','oats',100,{kcal:380,p:25.2,c:63,f:7.5,fi:9}],
+['rolled oats','oats',100,{kcal:380,p:13,c:68,f:7,fi:10}],['roasted chana','chana',100,{kcal:380,p:20,c:60,f:6,fi:15}],['roasted gram','chana',100,{kcal:380,p:20,c:60,f:6,fi:15}],
+['besan','besan',100,{kcal:387,p:22,c:58,f:6.7,fi:11}],['gram flour','besan',100,{kcal:387,p:22,c:58,f:6.7,fi:11}],
+['banana','banana',1,{kcal:105,p:1.3,c:27,f:.4,fi:3.1}],['milk','milk',100,{kcal:61,p:3.2,c:4.8,f:3.3,fi:0,calcium:120,b12:.45}],
+['paneer','paneer',100,{kcal:265,p:18,c:3,f:20,fi:0,calcium:200}],['tofu','tofu',100,{kcal:145,p:16,c:3,f:9,fi:1}],['soya chunks','soya',100,{kcal:345,p:52,c:33,f:.5,fi:13}],
+['cooked soya chunks','cooked soya',100,{kcal:150,p:18,c:12,f:5,fi:5}],['chickpeas','chickpeas',100,{kcal:164,p:8.9,c:27.4,f:2.6,fi:7.6}],['kadlekalu','chickpeas',100,{kcal:164,p:8.9,c:27.4,f:2.6,fi:7.6}],
+['cooked rice','rice',100,{kcal:130,p:2.7,c:28,f:.3,fi:.4}],['rice','rice',100,{kcal:130,p:2.7,c:28,f:.3,fi:.4}],['ragi mudde','mudde',100,{kcal:120,p:2.5,c:25,f:.7,fi:3}],['mudde','mudde',100,{kcal:120,p:2.5,c:25,f:.7,fi:3}],
+['egg','egg',1,{kcal:72,p:6.3,c:.4,f:4.8,fi:0,b12:.6}],['eggs','egg',1,{kcal:72,p:6.3,c:.4,f:4.8,fi:0,b12:.6}],['peanut butter','pb',100,{kcal:590,p:25,c:20,f:50,fi:6}],['mixed seeds','seeds',100,{kcal:560,p:20,c:20,f:45,fi:10,omega3:8}],
+['flaxseed','flax',100,{kcal:534,p:18.3,c:28.9,f:42.2,fi:27.3,omega3:22.8}],['amla','amla',1,{kcal:20,p:.5,c:5,f:.1,fi:2,vitc:60}],
+['apple','apple',1,{kcal:95,p:.5,c:25,f:.3,fi:4.4}],['tomato','tomato',100,{kcal:18,p:.9,c:3.9,f:.2,fi:1.2,vitc:14}],['onion','onion',100,{kcal:40,p:1.1,c:9.3,f:.1,fi:1.7}],
+['oil','oil',5,{kcal:45,p:0,c:0,f:5,fi:0}],['ghee','ghee',5,{kcal:45,p:0,c:0,f:5,fi:0}],['curd','curd',100,{kcal:61,p:3.5,c:4.7,f:3.3,fi:0,calcium:120}],
+['dry fruits','dry fruits',100,{kcal:480,p:12,c:55,f:25,fi:8}],['coffee','coffee',1.6,{kcal:5,p:0,c:1,f:0,fi:0}]
+];
+function findFood(s){let low=s.toLowerCase();return catalog.find(x=>low.includes(x[0]))}
+function addFood(name,qty,unit,entryText){let found=findFood(name);if(!found)return false;let [label,id,base,n]=found;let factor=qty/base;if(unit==='piece'&&base!==1)factor=qty/base;let item={id,name:label,qty,unit,entry:entryText,n:{}};for(let k in n)item.n[k]=n[k]*factor;(db.foods[today()]??=[]).push(item);return item}
+function totals(){let t={kcal:0,p:0,c:0,f:0,fi:0,calcium:0,b12:0,vitc:0,omega3:0};dayFoods().forEach(x=>Object.keys(t).forEach(k=>t[k]+=x.n[k]||0));return t}
+function fmt(v){return Math.round(v*10)/10}
+function render(){
+document.getElementById('todayDate').textContent=new Date().toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
+let t=totals(),g=db.goals;document.getElementById('kcal').textContent=Math.round(t.kcal)+' kcal';document.getElementById('protein').textContent=fmt(t.p)+' g';document.getElementById('carbs').textContent=fmt(t.c)+' g';document.getElementById('fat').textContent=fmt(t.f)+' g';document.getElementById('fibre').textContent=fmt(t.fi)+' g';document.getElementById('proteinGoal').textContent='Goal '+g.protein+' g';
+[['proteinBar',t.p,g.protein],['carbsBar',t.c,g.carbs],['fatBar',t.f,g.fat],['fibreBar',t.fi,g.fibre]].forEach(([id,v,max])=>document.getElementById(id).style.width=Math.min(100,v/max*100)+'%');
+document.getElementById('foodList').innerHTML=dayFoods().length?dayFoods().map((x,i)=>`<div class="foodrow"><div><b>${esc(x.name)}</b><small>${x.qty} ${esc(x.unit)} · ${Math.round(x.n.kcal||0)} kcal · ${fmt(x.n.p||0)} g protein</small></div><button class="tag" data-remove="${i}">Remove</button></div>`).join(''):'<div class="muted small">No food logged yet. Add something in AI Log.</div>';
+document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{dayFoods().splice(+b.dataset.remove,1);save()});
+let micros=[['Calcium',t.calcium,'mg'],['Vitamin B12',t.b12,'µg'],['Vitamin C',t.vitc,'mg'],['Omega-3 ALA',t.omega3,'g'],['Iron','—','data incomplete'],['Zinc','—','data incomplete'],['Vitamin D','—','data incomplete'],['Potassium','—','data incomplete']];
+document.getElementById('microList').innerHTML=micros.map(m=>`<div class="micro"><b>${m[0]}</b><span>${typeof m[1]==='number'?fmt(m[1])+' '+m[2]:m[1]}</span></div>`).join('');
+let a=db.activities[today()]||{};document.getElementById('stepsToday').textContent=a.steps||0;document.getElementById('waterToday').textContent=(a.water||0)+' ml';document.getElementById('sleepToday').textContent=a.sleep?a.sleep+' h':'— h';document.getElementById('workoutToday').textContent=db.workouts.filter(w=>w.date===today()).length;
+document.getElementById('workoutHistory').innerHTML=db.workouts.slice(-8).reverse().map(w=>`<div class="foodrow"><div><b>${esc(w.text)}</b><small>${w.date}</small></div></div>`).join('')||'<span class="muted small">No workouts logged yet.</span>';
+document.getElementById('weightHistory').innerHTML=db.weights.slice(-12).reverse().map(w=>`<div class="foodrow"><div><b>${w.kg} kg ${w.waist?' · waist '+w.waist+' cm':''}</b><small>${w.date}</small></div></div>`).join('')||'No measurements yet.';
+document.getElementById('goalKcal').value=g.kcal;document.getElementById('goalProtein').value=g.protein;
+}
+function parseCommand(raw){
+let s=raw.toLowerCase().trim(),msg=[];
+if(!s)return 'Type something first.';
+if(/^(remove|delete|subtract)\b/.test(s)){let f=findFood(s);if(!f)return 'I could not identify which food to remove. Try “remove banana”.';let arr=dayFoods(),idx=arr.findIndex(x=>x.id===f[1]);if(idx<0)return 'That food is not in today’s log.';arr.splice(idx,1);save();return 'Removed '+f[0]+' from today’s food log.';}
+if(/^(change|make|update|replace)\b/.test(s)){let f=findFood(s);if(!f)return 'I could not identify the food to edit. Try “make chana 40 g”.';let qty=s.match(/(\d+(?:\.\d+)?)\s*(g|gm|gms|grams|ml|kg)\b/);if(!qty)return 'Please include the new quantity, e.g. “make chana 40 g”.';let arr=dayFoods(),idx=arr.findIndex(x=>x.id===f[1]);if(idx<0)return 'That food is not in today’s log yet.';let unit=qty[2]==='ml'?'ml':qty[2]==='kg'?'kg':'g';let q=+qty[1]*(unit==='kg'?1000:1);let added=addFood(f[0],q,unit,raw);arr.splice(idx,1);save();return 'Updated '+f[0]+' to '+q+' '+unit+'.';}
+if(/water/.test(s)){let m=s.match(/(\d+(?:\.\d+)?)\s*(ml|l|litre|liter)/);if(m){let a=db.activities[today()]||{};a.water=(a.water||0)+(+m[1]*(m[2]==='ml'?1:1000));db.activities[today()]=a;save();return 'Added water. Today: '+a.water+' ml.'}}
+if(/steps?/.test(s)){let m=s.match(/(\d+)/);if(m){let a=db.activities[today()]||{};a.steps=+m[1];db.activities[today()]=a;save();return 'Saved '+a.steps+' steps.'}}
+if(/sleep|slept/.test(s)){let m=s.match(/(\d+(?:\.\d+)?)/);if(m){let a=db.activities[today()]||{};a.sleep=+m[1];db.activities[today()]=a;save();return 'Saved '+a.sleep+' hours of sleep.'}}
+if(/walk|walking/.test(s)){let m=s.match(/(\d+)\s*(min|minute)/);if(m){let a=db.activities[today()]||{};a.walk=(a.walk||0)+(+m[1]);db.activities[today()]=a;save();return 'Saved '+m[1]+' minutes of walking.'}}
+if(/kg/.test(s)&&/weight|weigh|weighed/.test(s)){let m=s.match(/(\d+(?:\.\d+)?)\s*kg/);if(m){db.weights.push({kg:+m[1],date:today()});save();return 'Saved bodyweight: '+m[1]+' kg.'}}
+let f=findFood(s);if(f){let m=s.match(/(\d+(?:\.\d+)?)\s*(g|gm|gms|grams|ml|kg)\b/);let qty=m?+m[1]:f[2];let unit=m?(m[2]==='ml'?'ml':m[2]==='kg'?'kg':'g'):(f[2]===1?'piece':'g');if(unit==='kg')qty*=1000;let item=addFood(f[0],qty,unit,raw);save();return 'Added '+f[0]+' ('+qty+' '+unit+'). Estimated '+Math.round(item.n.kcal)+' kcal and '+fmt(item.n.p)+' g protein.'}
+return 'I could not confidently identify this entry. Try a supported food name and quantity, or log it manually after choosing a known food. This offline parser is limited; AI model integration is a later step.';
+}
+document.getElementById('process').onclick=()=>{let r=parseCommand(document.getElementById('command').value);document.getElementById('response').textContent=r;document.getElementById('command').value=''};
+document.querySelectorAll('.quick').forEach(b=>b.onclick=()=>{let r=parseCommand(b.dataset.value);document.getElementById('response').textContent=r});
+document.getElementById('saveWorkout').onclick=()=>{let v=document.getElementById('workoutInput').value.trim();if(!v)return;db.workouts.push({text:v,date:today()});document.getElementById('workoutInput').value='';save()};
+document.getElementById('saveActivity').onclick=()=>{let a=db.activities[today()]||{};['steps','water','sleep','walk'].forEach(k=>{let el=document.getElementById(k+'Input');if(el.value!=='')a[k]=+el.value});db.activities[today()]=a;save()};
+document.getElementById('saveWeight').onclick=()=>{let kg=+document.getElementById('weightInput').value;if(!kg)return;db.weights.push({kg,waist:+document.getElementById('waistInput').value||null,date:today()});document.getElementById('weightInput').value='';document.getElementById('waistInput').value='';save()};
+document.getElementById('saveGoals').onclick=()=>{db.goals.kcal=+document.getElementById('goalKcal').value||2300;db.goals.protein=+document.getElementById('goalProtein').value||90;save()};
+document.getElementById('export').onclick=()=>{let blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='myfitai-backup-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)};
+document.getElementById('importBtn').onclick=()=>document.getElementById('importFile').click();
+document.getElementById('importFile').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text());if(!d.foods||!d.goals)throw Error();db=d;save();alert('Backup restored.')}catch(err){alert('This backup file is not valid.')}};
+document.getElementById('clear').onclick=()=>{if(confirm('Permanently delete all MyFit AI data saved in this browser? Export a backup first if needed.')){db=fresh();save()}};
+document.getElementById('tabs').onclick=e=>{let b=e.target.closest('[data-tab]');if(!b)return;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));['today','chat','fitness','weight','settings'].forEach(id=>document.getElementById(id).classList.toggle('hidden',id!==b.dataset.tab))};
+render();
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body></html>
